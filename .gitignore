@@ -22,3 +22,24 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Kafka specific
+/tmp/
+/logs/
+kafka-logs/
+
+# Docker
+.env.local
+
+# Personal notes (si quieres mantener algunas notas privadas)
+personal-notes/
