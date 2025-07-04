@@ -8,8 +8,8 @@
 ### Fundamentals & Setup (Weeks 1-3)
 - [ ] Week 1: Fundamentos y Setup
     - [ ] [Proyecto 1: Kafka Local Setup](projects/week-01/kafka-setup/README.md)
-    - [ ] Proyecto 2: Simple Messaging
-    - [ ] Proyecto 3: Real-time Chat
+    - [ ] [Proyecto 2: Simple Messaging](projects/week-01/basic-messaging/README.md)
+    - [ ] [Proyecto 3: Real-time Chat](projects/week-01/real-chat/README.md)
 - [ ] Week 2: Configuración y Tuning  
 - [ ] Week 3: Reliability y Fault Tolerance
 

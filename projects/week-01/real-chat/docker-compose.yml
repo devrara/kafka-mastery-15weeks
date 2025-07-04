@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    hostname: kafka
+    container_name: real-chat-kafka
+    ports:
+      - "9092:9092"
+      - "9093:9093" # Puerto adicional para el listener del controlador KRaft
+    environment:
+      KAFKA_PROCESS_ROLES: broker,controller # Define los roles del proceso Kafka como broker y controlador
+      KAFKA_NODE_ID: 1 # ID único del nodo en el clúster KRaft
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093 # Define los votantes del quórum del controlador KRaft
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,CONTROLLER://0.0.0.0:9093,PLAINTEXT_HOST://0.0.0.0:9092 # Define los listeners para la comunicación
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092 # Define los listeners que se anuncian a los clientes
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT # Mapeo de protocolos de seguridad para los listeners
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER # Nombre del listener del controlador
+      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs # Directorio para los logs de KRaft
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1 # Factor de replicación para el tópico de offsets
+    command:
+      - bash
+      - -c
+      - |
+        if [ ! -f "/tmp/kraft-combined-logs/meta.properties" ]; then
+          echo "Formateando almacenamiento KRaft..."
+          CLUSTER_ID=$(kafka-storage random-uuid)
+          kafka-storage format -t $CLUSTER_ID --config /etc/kafka/kafka.properties
+        fi
+        /etc/confluent/docker/run
+  
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: real-chat-kafka-ui
+    depends_on:
+      - kafka
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+
+volumes:
+  kafka-data:
